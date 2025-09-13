@@ -1,5 +1,19 @@
-venv/
+# Python
 __pycache__/
-.env/
-0-main.py/
-user_data.csv/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# CSV / data files
+*.csv
+
+# Test / main scripts not required
+0-main.py
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# dotenv files
+.env
