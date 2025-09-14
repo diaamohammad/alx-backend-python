@@ -1,6 +1,6 @@
 from seed import connect_to_prodev
 
-def paginate_users(page_size,offset):
+def paginate_users(page_size, offset):
 
     connection = connect_to_prodev()
     cursor = connection.cursor(dictionary=True)
@@ -13,7 +13,7 @@ def paginate_users(page_size,offset):
 def lazy_paginate(page_size):
     offset = 0
     while True:
-      rows = paginate_users(page_size,offset)
+      rows = paginate_users(page_size, offset)
     
       if not rows:
         break
