@@ -1,6 +1,6 @@
 from seed import connect_to_prodev
 
-def paginate_users(page_size , offset):
+def paginate_users(page_size,offset):
 
     connection = connect_to_prodev()
     cursor = connection.cursor(dictionary=True)
