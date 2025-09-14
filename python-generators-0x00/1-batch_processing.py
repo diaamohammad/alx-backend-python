@@ -26,7 +26,7 @@ for batch in stream_users_in_batches():
 
 
 
-def batch_processing(batch_size =2):
+def batch_processing(batch_size):
 
     offset = 0
     connection = connect_to_prodev()
@@ -42,7 +42,7 @@ def batch_processing(batch_size =2):
        yield rows
        offset+=batch_size
 
-    cursor.closse()
+    cursor.close()
     connection.close()
        
 
