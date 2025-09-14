@@ -6,3 +6,4 @@ def stream_user_ages():
     cursor = connection.cursor()
     cursor.execute(" ")
 
+["+", "/"]
