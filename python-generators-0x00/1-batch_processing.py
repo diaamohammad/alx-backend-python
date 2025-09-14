@@ -45,7 +45,7 @@ def batch_processing(batch_size):
     cursor.close()
     connection.close()
 
-    return()
+    
        
 
 
