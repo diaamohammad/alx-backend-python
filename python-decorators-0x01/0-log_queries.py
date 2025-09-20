@@ -1,20 +1,16 @@
 import sqlite3
-from functools import wraps
+import functools
 from datetime import datetime
 
-
-
 def log_queries(func):
-    @wraps(func)
-    def wrapper(*args,**kwargs):
-
-        query = args[0] if args  else kwargs.get('query','no query provieded')
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        query = args[0] if args else kwargs.get('query', 'No query provided')
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"[{timestamp}] Executing query: {query}")
-        result = func(*args,**kwargs)
+        result = func(*args, **kwargs)
         return result
     return wrapper
-
 
 @log_queries
 def fetch_all_users(query):
@@ -25,5 +21,6 @@ def fetch_all_users(query):
     conn.close()
     return results
 
-users = fetch_all_users(query="SELECT * FROM users")
-print(f"query results: {users}")
+if __name__ == "__main__":
+    users = fetch_all_users(query="SELECT * FROM users")
+    print(f"Query results: {users}")
