@@ -39,3 +39,4 @@ async def fetch_concurrently():
 
 if __name__ == "__main__":
     asyncio.run(fetch_concurrently())
+["async def async_fetch_users()", "async def async_fetch_older_users()"]
