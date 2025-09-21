@@ -16,7 +16,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
+["email", "password", "first_name", "last_name"]
 
 class Conversation(models.Model):
     conversation_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
