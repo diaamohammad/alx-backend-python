@@ -186,3 +186,27 @@ class MockResponse:
 
     def json(self):
         return self._payload
+
+ - [Got]
+FAILED (errors=1)
+
+(18 chars long)
+
+[Expected]
+OK
+
+(3 chars long)
+\
+
+test_client.py:137:1: E303 too many blank lines (5)
+
+
+ - [Got]
+Exception: (<class 'ModuleNotFoundError'>, ModuleNotFoundError("No module named 'utils'"), <traceback object at 0x7fe6c941a6c8>)
+Can't import test_client
+
+(154 chars long)
+
+[Expected]
+OK
+(2 chars long)
