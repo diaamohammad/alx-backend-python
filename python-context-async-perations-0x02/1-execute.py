@@ -1,41 +1,33 @@
-#!/usr/bin/env python3
-"""
-Context manager that executes a query and manages DB connection.
-"""
-
 import sqlite3
 
+class ExecuteQuery():
 
-class ExecuteQuery:
-    def __init__(self, db_name, query, params=None):
-        self.db_name = db_name
-        self.query = query
-        self.params = params if params else ()
+    def __init__(self,db_name,query,parmas=None):
+        self.db_name= db_name
         self.conn = None
-        self.cursor = None
-        self.result = None
+        self.query = query
+        self.parmas = parmas if parmas else []
+        self.curosr = None
 
-    def __enter__(self):
-        # open connection and execute the query
-        self.conn = sqlite3.connect(self.db_name)
-        self.cursor = self.conn.cursor()
-        self.cursor.execute(self.query, self.params)
-        self.result = self.cursor.fetchall()
-        return self.result
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        if self.cursor:
-            self.cursor.close()
+    def enter(self,*args,**kwargs):
+
+        self.conn = sqlite3.connect('db_users')
+        self.curosr = self.conn.cursor()
+        self.curosr.execute(self.query,self.parmas)
+        results = self.curosr.fetchall()
+        return results
+
+    
+    def __exit__(self,exc_type, exc_value, traceback):
+
         if self.conn:
-            self.conn.close()
-        # Don't suppress exceptions if any
-        return False
+            return self.conn.close()
 
+query = "select * from users where age > ?"
+parmas = (25,)
 
-if __name__ == "__main__":
-    query = "SELECT * FROM users WHERE age > ?"
-    params = (25,)
-    # Example usage
-    with ExecuteQuery("db.sqlite3", query, params) as result:
-        for row in result:
-            print(row)
+       
+with ExecuteQuery('db_users',query,parmas) as result:
+    for row in result:
+       print(row)
