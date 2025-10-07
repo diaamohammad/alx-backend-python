@@ -14,3 +14,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
 ["status", "filters"]
+
+
+
+"IsAuthenticated", "conversation_id", "Message.objects.filter", "HTTP_403_FORBIDDEN"
