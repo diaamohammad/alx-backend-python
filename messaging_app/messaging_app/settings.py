@@ -126,3 +126,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 ["rest_framework.permissions.IsAuthenticated", "DEFAULT_AUTHENTICATION_CLASSES", "rest_framework.authentication.SessionAuthentication"]
+
+
+"PAGE_SIZE", "20", "DEFAULT_PAGINATION_CLASS", "PageNumberPagination"
