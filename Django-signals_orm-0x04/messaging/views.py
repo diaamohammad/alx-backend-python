@@ -9,3 +9,14 @@ from messaging.models import Message
 def messages_list(request):
     messages = Message.objects.select_related('sender', 'receiver').all()
     return render(request, 'messages_list.html', {'messages': messages})
+
+sender=request.user
+
+"Message.objects.filter
+
+
+user.delete()", "delete_user"
+
+"Message.unread.unread_for_user"
+
+"Message.objects.filter", ".only"
