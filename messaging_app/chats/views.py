@@ -1,20 +1,32 @@
 from django.shortcuts import render
+from .models import User,Message,Conversation
+from .serializers import UserSerializer,MessageSerializer,ConversationSerializer
+from rest_framework import viewsets,permissions
 
-# Create your views here.
-from rest_framework import viewsets
-from .models import Conversation, Message
-from .serializers import ConversationSerializer, MessageSerializer
 
-class ConversationViewSet(viewsets.ModelViewSet):
-    queryset = Conversation.objects.all()
+class ConversationView(viewsets.ModelViewSet):
+
+   
     serializer_class = ConversationSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        
+        user = self.request.user
+        return user.conversations.all().prefetch_related('participants', 'messages')
+        
+class MessageView(viewsets.ModelViewSet):
 
-class MessageViewSet(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
+    
     serializer_class = MessageSerializer
-["status", "filters"]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(conversation__participants=user)
+    
+    def perform_create(self, serializer):
+        serializer.save(sender = self.request.user)
 
 
 
-"IsAuthenticated", "conversation_id", "Message.objects.filter", "HTTP_403_FORBIDDEN"
+
