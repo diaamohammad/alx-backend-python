@@ -66,3 +66,4 @@ class RolePermissionMiddleware:
             if not user.is_authenticated or getattr(user, 'role', None) not in ['admin', 'moderator']:
                 return HttpResponseForbidden("You do not have permission to access this page.")
         return self.get_response(request)
+class RolepermissionMiddleware
