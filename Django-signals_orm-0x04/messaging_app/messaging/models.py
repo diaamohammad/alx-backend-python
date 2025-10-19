@@ -2,21 +2,27 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class UnreadMessagesManager(models.Manager):
+    def for_user(self, user):
+        return self.filter(receiver=user, read=False).only('sender', 'content', 'timestamp')
+
+
+
 class Message(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
-    parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')  # ✅ added
+    parent_message = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
+    read = models.BooleanField(default=False)  
+
+    objects = models.Manager()
+    unread = UnreadMessagesManager()  
 
     def __str__(self):
         return f"{self.sender} → {self.receiver}: {self.content[:30]}"
-
-    def get_thread(self):
-        """Recursively get all replies"""
-        replies = self.replies.all().select_related('sender', 'receiver').prefetch_related('replies')
-        return replies
 
 
 class Notification(models.Model):
@@ -27,6 +33,7 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username}"
+    
 
 
 
@@ -37,3 +44,5 @@ class MessageHistory(models.Model):
 
     def __str__(self):
         return f"History for message {self.message.id}"
+
+
