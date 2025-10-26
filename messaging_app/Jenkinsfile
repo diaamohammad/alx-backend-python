@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    environment {
+        GITHUB_CREDS = 'github-token' // (ده الـ ID اللي عملناه في Jenkins)
+        DOCKER_CREDS = 'dockerhub-creds' // (ده الـ ID اللي عملناه في Jenkins)
+        // ⬇️⬇️ غيّر ده لاسمك في جيت هاب ⬇️⬇️
+        REPO_URL = 'https://github.com/diaamohammad/alx-backend-python.git'
+        // ⬇️⬇️ غيّر ده لاسمك في دوكر هاب ⬇️⬇️
+        DOCKER_IMAGE_NAME = 'diaaalsemary5/messaging-app'
+    }
+    stages {
+        // === المهمة 0: سحب الكود والاختبار ===
+        stage('1. Checkout Code') {
+            steps {
+                // هيسحب الكود من جيت هاب (من فرع main)
+                git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
+            }
+        }
+        stage('2. Run Tests (pytest)') {
+            steps {
+                // هيشتغل جوه مجلد المشروع
+                dir('messaging_app') {
+                    sh 'pip install -r requirements.txt'
+                    sh 'pip install pytest' // بنضيف pytest لو مش في الملف
+
+                    // هيشغل الاختبارات ويطلع ريبورت
+                    sh 'pytest --junitxml=test-report.xml || true'
+                }
+            }
+            post {
+                // هيقرأ الريبورت اللي طلع
+                always {
+                    junit 'messaging_app/test-report.xml'
+                }
+            }
+        }
+        // === المهمة 1: بناء ورفع صورة Docker ===
+        stage('3. Build Docker Image') {
+            steps {
+                dir('messaging_app') { // (عشان يلاقي الـ Dockerfile)
+                    script {
+                        def appImage = docker.build("${DOCKER_IMAGE_NAME}:latest", ".")
+                    }
+                }
+            }
+        }
+        stage('4. Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDS) {
+                        docker.image(DOCKER_IMAGE_NAME).push('latest')
+                    }
+                }
+            }
+        }
+    }
+}
