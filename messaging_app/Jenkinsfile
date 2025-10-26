@@ -20,7 +20,7 @@ pipeline {
             // ⬇️⬇️ ده التعديل الجديد ⬇️⬇️
             tools { 
                 // (لازم الاسم ده يكون "بالظبط" زي اللي عملته في Jenkins -> Tools)
-                Python 'Python 3.10' 
+                Python: 'Python 3.10' 
             }
             // ⬆️⬆️ نهاية التعديل ⬆️⬆️
             steps {
