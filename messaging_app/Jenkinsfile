@@ -16,12 +16,11 @@ pipeline {
             }
         }
 
-        // === المهمة 0: الاختبار ===
-        stage('2. Run Tests (pytest)') {
+        // === المهمة 0: الاختبار ===        stage('2. Run Tests (pytest)') {
             // ⬇️⬇️ ده التعديل الجديد ⬇️⬇️
             tools { 
                 // (لازم الاسم ده يكون "بالظبط" زي اللي عملته في Jenkins -> Tools)
-                python 'Python 3.10' 
+                Python 'Python 3.10' 
             }
             // ⬆️⬆️ نهاية التعديل ⬆️⬆️
             steps {
