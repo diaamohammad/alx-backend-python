@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # هذا السكريبت يقوم ببدء تشغيل Minikube والتحقق من حالته
 
 echo "--- 1. Starting Minikube Cluster (using Docker driver) ---"
