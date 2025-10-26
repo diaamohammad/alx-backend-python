@@ -10,3 +10,4 @@ kubectl cluster-info
 
 echo "--- 3. Retrieving Available Pods (in all namespaces) ---"
 kubectl get pods --all-namespaces
+
