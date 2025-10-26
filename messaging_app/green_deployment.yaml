@@ -1,0 +1,104 @@
+# 1. تعريف الـ Deployment (الوصفة)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-deployment-green # ✅ 1. التعديل الأول: غيرنا الاسم
+  labels:
+    app: messaging-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging-app
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+        version: "green" # ✅ 2. التعديل الثاني: غيرنا الإصدار لـ "green"
+    spec:
+      containers:
+      - name: web
+        image: messaging-app:2.0 # ✅ 3. التعديل الثالث: خليناه يبص على صورة 2.0 (للمهمة 5)
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MYSQL_HOST
+          value: "db-service"
+        - name: MYSQL_DB
+          value: "messagingdb"
+        - name: MYSQL_USER
+          value: "msg_user"
+        - name: MYSQL_PASSWORD
+          value: "strongpassword"
+        - name: SECRET_KEY
+          value: "dummy-secret-key-for-k8s"
+        - name: DEBUG
+          value: "1"
+
+---
+# 2. تعريف الـ Service (كيفية الوصول للـ Deployment)
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-service
+spec:
+  type: ClusterIP
+  selector:
+    app: messaging-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000# 1. تعريف الـ Deployment (الوصفة)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-deployment # <-- ده الـ "Blue" (الأزرق)
+  labels:
+    app: messaging-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messaging-app
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+        version: "blue" # ✅ <-- ده التعديل المهم للمهمة 4
+    spec:
+      containers:
+      - name: web
+        image: messaging-app:1.0 # <-- ده الإصدار القديم (v1)
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MYSQL_HOST
+          value: "db-service"
+        - name: MYSQL_DB
+          value: "messagingdb"
+        - name: MYSQL_USER
+          value: "msg_user"
+        - name: MYSQL_PASSWORD
+          value: "strongpassword"
+        - name: SECRET_KEY
+          value: "dummy-secret-key-for-k8s"
+        - name: DEBUG
+          value: "1"
+
+---
+# 2. تعريف الـ Service (كيفية الوصول للـ Deployment)
+# (الجزء ده مش هيتغير، إحنا هنستخدم ملف kubeservice.yaml عشان نتحكم في الترافيك)
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-service
+spec:
+  type: ClusterIP
+  selector:
+    app: messaging-app # <-- الخدمة دي هتدور على أي حاجة بالليبل ده
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000

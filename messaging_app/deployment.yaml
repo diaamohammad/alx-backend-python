@@ -1,0 +1,51 @@
+# 1. تعريف الـ Deployment (الوصفة)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messaging-app-deployment
+  labels:
+    app: messaging-app
+spec:
+  replicas: 1 # ابدأ بنسخة واحدة (Pod)
+  selector:
+    matchLabels:
+      app: messaging-app
+  template:
+    metadata:
+      labels:
+        app: messaging-app
+    spec:
+      containers:
+      - name: web
+        image: messaging-app:1.0 # <-- اسم الصورة اللي هنبنيها بعدين
+        imagePullPolicy: IfNotPresent # <-- مهم: لا تحاول تحميلها من الإنترنت
+        ports:
+        - containerPort: 8000
+        env: # متغيرات البيئة اللي تطبيقك محتاجها
+        - name: MYSQL_HOST
+          value: "db-service" # اسم وهمي لقاعدة البيانات (هنظبطه بعدين)
+        - name: MYSQL_DB
+          value: "messagingdb"
+        - name: MYSQL_USER
+          value: "msg_user"
+        - name: MYSQL_PASSWORD
+          value: "strongpassword"
+        - name: SECRET_KEY
+          value: "dummy-secret-key-for-k8s"
+        - name: DEBUG
+          value: "1"
+
+---
+# 2. تعريف الـ Service (كيفية الوصول للـ Deployment)
+apiVersion: v1
+kind: Service
+metadata:
+  name: messaging-app-service # اسم الخدمة
+spec:
+  type: ClusterIP # <-- كما هو مطلوب (داخلي فقط)
+  selector:
+    app: messaging-app # يوجه الترافيك لأي Pod عليه هذا الـ Label
+  ports:
+  - protocol: TCP
+    port: 80 # المنفذ الذي ستراه الخدمات الأخرى
+    targetPort: 8000 # المنفذ الذي يعمل عليه تطبيقك داخل الحاوية

@@ -1,4 +1,10 @@
-.env
+# Ignore downloaded binaries
+kubectl
+minikube
+
+# Ignore databases
+db.sqlite3
+*.sqlite3.env
 venv/
 __pycache__/
 db.sqlite3

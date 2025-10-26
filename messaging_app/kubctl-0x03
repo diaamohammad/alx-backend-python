@@ -1,0 +1,24 @@
+#!/bin/bash
+echo "--- 1. Applying updated deployment to trigger rolling update ---"
+# المشروع بيفترض إنك هتعدل `blue_deployment.yaml`
+# وتغير الـ image: tag من 1.0 إلى 2.0
+echo " (Make sure you've changed image to 2.0 in blue_deployment.yaml)"
+kubectl apply -f blue_deployment.yaml
+
+echo ""
+echo "--- 2. Monitoring update progress (This will block until complete) ---"
+# -w معناها watch (راقب)
+kubectl rollout status deployment/messaging-app-deployment -w
+
+echo ""
+echo "--- 3. Verifying final pods (should show new version) ---"
+kubectl get pods -l app=messaging-app
+
+echo ""
+echo "--- 4. Continuous curl test (Press Ctrl+C to stop) ---"
+echo "Checking Ingress at http://messaging.app/api (requires Ingress setup from Task 3)"
+while true; do
+    # -sL: صامت / -o: ارمي الناتج / -w: اظهر الكود
+    curl -sL http://messaging.app/api -o /dev/null -w "%{http_code}\n"
+    sleep 0.5
+done

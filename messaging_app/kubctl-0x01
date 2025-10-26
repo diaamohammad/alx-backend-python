@@ -1,0 +1,25 @@
+#!/bin/bash
+echo "--- 1. Scaling Deployment to 3 replicas ---"
+kubectl scale deployment messaging-app-deployment --replicas=3
+
+echo ""
+echo "--- 2. Verifying pods (waiting...) ---"
+kubectl get pods -l app=messaging-app
+
+echo ""
+echo "--- 3. Monitoring Resource Usage ---"
+echo "Enabling metrics-server addon..."
+minikube addons enable metrics-server
+echo "Waiting for metrics-server to start (approx. 20s)..."
+sleep 20
+kubectl top pods -l app=messaging-app
+
+echo ""
+echo "--- 4. Load Testing (wrk) Info ---"
+echo "Project requires 'wrk'. If not installed, run in a new terminal: sudo apt-get update && sudo apt-get install -y wrk"
+echo "To run the test, you must first expose the service in a NEW terminal:"
+echo "minikube service messaging-app-service"
+echo "Then use the URL it provides (e.g., http://127.0.0.1:XXXXX) with wrk:"
+echo "wrk -t4 -c100 -d30s http://127.0.0.1:XXXXX"
+
+

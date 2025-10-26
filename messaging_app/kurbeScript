@@ -1,0 +1,12 @@
+#!/bin/bash
+# هذا السكريبت يقوم ببدء تشغيل Minikube والتحقق من حالته
+
+echo "--- 1. Starting Minikube Cluster (using Docker driver) ---"
+# نستخدم "docker" كـ driver لأنه موجود عندك بالفعل
+minikube start --driver=docker
+
+echo "--- 2. Verifying Cluster Info ---"
+kubectl cluster-info
+
+echo "--- 3. Retrieving Available Pods (in all namespaces) ---"
+kubectl get pods --all-namespaces
