@@ -20,7 +20,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class ConversationSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(read_only=True,mnay=True)
+    messages = MessageSerializer(read_only=True,many=True)
     users = UserSerializer(read_only=True,many=True)
     class Meta:
         model = Conversation

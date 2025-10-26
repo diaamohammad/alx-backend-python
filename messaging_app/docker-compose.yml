@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # الخدمة الأولى: تطبيق الويب (Django)
+  web:
+    build: . # هيستخدم الـ Dockerfile اللي بنيناه
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000" # هيربط منفذ 8000 في جهازك بمنفذ 8000 في الحاوية
+    env_file:
+      - .env # هيقرأ المتغيرات من ملف .env
+    depends_on:
+      - db # هيستنى الداتابيز تقوم الأول
+    volumes:
+      - .:/app # هيربط الكود بتاعك
+
+  # الخدمة الثانية: قاعدة البيانات (MySQL)
+  db:
+    image: mysql:8.0 # هيجيب صورة MySQL جاهزة
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB} # هيقرأ المتغيرات دي من .env
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: rootpassword123
+    volumes:
+      - mysql_data:/var/lib/mysql # <-- إجابة المهمة 2
+
+# تعريف الـ Volume
+volumes:
+  mysql_data:

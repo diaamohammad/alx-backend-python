@@ -11,12 +11,13 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     ]
    
-    username = None
+    
     email = models.EmailField(unique=True) 
     phone_number = models.CharField(max_length=20, null=True, blank=True) 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='guest')
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
+
+   
 
     def __str__(self):
         return self.email

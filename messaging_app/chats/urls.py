@@ -1,9 +1,9 @@
-from rest_framework import routers
+from rest_framework.routers import DefaultRouter
 from django.urls import path,include
 from .views import MessageView,ConversationView
 from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView)
 
-router = routers.DefaultRouter
+router = DefaultRouter()
 
 router.register(r'conversations',ConversationView,basename='conversatios')
 router.register(r'messages',MessageView,basename='message')

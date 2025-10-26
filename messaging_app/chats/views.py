@@ -13,7 +13,8 @@ class ConversationView(viewsets.ModelViewSet):
 
    
     serializer_class = ConversationSerializer
-    permission_classes = [IsParticipantOfConversation]
+    permission_classes = [permissions.IsAuthenticated, IsParticipantOfConversation]
+
 
     def get_queryset(self):
         

@@ -1,7 +1,7 @@
 import django_filters
 from .models import User,Message
 
-class MessageFilter(django_filters.filterset):
+class MessageFilter(django_filters.FilterSet):
 
     sender = django_filters.ModelChoiceFilter(
         field_name = 'sender',
