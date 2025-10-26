@@ -16,16 +16,14 @@ pipeline {
             }
         }
 
-        // === المهمة 0: الاختبار ===        stage('2. Run Tests (pytest)') {
-            // ⬇️⬇️ ده التعديل الجديد ⬇️⬇️
-            tools { 
+        // === المهمة 0: الاختبار ===
+        stage('2. Run Tests (pytest)') {
+            tools {
                 // (لازم الاسم ده يكون "بالظبط" زي اللي عملته في Jenkins -> Tools)
-                Python: 'Python 3.10' 
+                python: 'Python 3.10'
             }
-            // ⬆️⬆️ نهاية التعديل ⬆️⬆️
             steps {
                 dir('messaging_app') {
-                    // المرة دي 'pip' هتكون موجودة
                     sh 'pip install -r requirements.txt'
                     sh 'pip install pytest'
                     sh 'pytest --junitxml=test-report.xml || true'
@@ -37,7 +35,7 @@ pipeline {
                 }
             }
         }
-        
+
         // === المهمة 1: بناء ورفع صورة Docker ===
         stage('3. Build Docker Image') {
             steps {
