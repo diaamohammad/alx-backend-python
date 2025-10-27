@@ -20,7 +20,7 @@ pipeline {
         stage('2. Run Tests (pytest)') {
             // ✅ Fix: استخدام الصيغة الصحيحة لـ tools 
             tools {
-                python installation('Python 3.10') 
+                pythonInstallation 'Python 3.10' 
             }
             steps {
                 dir('messaging_app') {
