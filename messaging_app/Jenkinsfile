@@ -9,52 +9,54 @@ pipeline {
         DOCKER_IMAGE_NAME = 'diaaalsemary5/messaging-app'
     }
     stages {
-        // === Stage 1: Checkout Code ===
+        // === المرحلة 1: سحب الكود ===
         stage('1. Checkout Code') {
             steps {
                 git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
             }
         }
         
-        // === Stage 2: Run Tests (pytest) ===
+        // === المرحلة 2: تشغيل الاختبارات (pytest) ===
         stage('2. Run Tests (pytest)') {
             steps {
-                // ✅ Final Fix: Use the Scripted Pipeline approach (wrap) to load Python Environment
+                // ✅ استخدام الطريقة البرمجية (Scripted) لتحميل بيئة البايثون لتجاوز خطأ "Invalid tool type"
+                // تأكد أن اسم الأداة في Jenkins هو بالضبط: Python3.10
                 wrap([$class: 'PythonInstallationWrapper', installation: 'Python3.10']) {
                     dir('messaging_app') {
+                        // تثبيت الاعتماديات
                         sh 'pip install -r requirements.txt'
                         sh 'pip install pytest'
-                        // Run tests and save report (allow failure with || true if needed for post-actions)
+                        // تشغيل الاختبارات
                         sh 'pytest --junitxml=test-report.xml || true'
                     }
                 }
             }
             post {
                 always {
-                    // Record test results
+                    // تسجيل نتيجة الاختبارات
                     junit 'messaging_app/test-report.xml'
                 }
             }
         }
         
-        // === Stage 3: Build Docker Image ===
+        // === المرحلة 3: بناء صورة Docker (المهمة 1) ===
         stage('3. Build Docker Image') {
             steps {
                 dir('messaging_app') {
                     script {
-                        // Use BUILD_NUMBER as a unique tag
+                        // بناء الصورة
                         docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}", ".")
                     }
                 }
             }
         }
         
-        // === Stage 4: Push to Docker Hub ===
+        // === المرحلة 4: رفع الصورة لـ Docker Hub (المهمة 1) ===
         stage('4. Push to Docker Hub') {
             steps {
                 script {
+                    // استخدام الأسرار لرفع الصورة
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDS) {
-                        // Push the unique build tag and the 'latest' tag
                         docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
                         docker.image("${DOCKER_IMAGE_NAME}:latest").push()
                     }
