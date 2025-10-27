@@ -1,239 +1,27 @@
 pipeline {
     agent any
     environment {
-        // IDs must match the credentials created in Jenkins
         GITHUB_CREDS = 'github-token'
         DOCKER_CREDS = 'dockerhub-creds'
-        // 🚨 CHANGE THESE USERNAMES 🚨
         REPO_URL = 'https://github.com/diaamohammad/alx-backend-python.git'
         DOCKER_IMAGE_NAME = 'diaaalsemary5/messaging-app'
     }
     stages {
-        // === المرحلة 1: سحب الكود ===
         stage('1. Checkout Code') {
             steps {
                 git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
             }
         }
-        
-        Started by user diaam
-
-Obtained messaging_app/Jenkinsfile from git https://github.com/diaamohammad/alx-backend-python.git
-[Pipeline] Start of Pipeline
-[Pipeline] node
-Running on Jenkins
- in /var/jenkins_home/workspace/messaging-app-pipeline
-[Pipeline] {
-[Pipeline] stage
-[Pipeline] { (Declarative: Checkout SCM)
-[Pipeline] checkout
-The recommended git tool is: git
-using credential github-token
- > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/messaging-app-pipeline/.git # timeout=10
-Fetching changes from the remote Git repository
- > git config remote.origin.url https://github.com/diaamohammad/alx-backend-python.git # timeout=10
-Fetching upstream changes from https://github.com/diaamohammad/alx-backend-python.git
- > git --version # timeout=10
- > git --version # 'git version 2.47.3'
-using GIT_ASKPASS to set credentials 
- > git fetch --tags --force --progress -- https://github.com/diaamohammad/alx-backend-python.git +refs/heads/*:refs/remotes/origin/* # timeout=10
- > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
-Checking out Revision 4df8a8dbf851036d7882d657324b145513847672 (refs/remotes/origin/main)
- > git config core.sparsecheckout # timeout=10
- > git checkout -f 4df8a8dbf851036d7882d657324b145513847672 # timeout=10
-Commit message: "Fixed"
- > git rev-list --no-walk 01ff22dfd045c56d0fd408a981f6d6223385d78f # timeout=10
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] withEnv
-[Pipeline] {
-[Pipeline] withEnv
-[Pipeline] {
-[Pipeline] stage
-[Pipeline] { (1. Checkout Code)
-[Pipeline] git
-The recommended git tool is: git
-using credential github-token
- > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/messaging-app-pipeline/.git # timeout=10
-Fetching changes from the remote Git repository
- > git config remote.origin.url https://github.com/diaamohammad/alx-backend-python.git # timeout=10
-Fetching upstream changes from https://github.com/diaamohammad/alx-backend-python.git
- > git --version # timeout=10
- > git --version # 'git version 2.47.3'
-using GIT_ASKPASS to set credentials 
- > git fetch --tags --force --progress -- https://github.com/diaamohammad/alx-backend-python.git +refs/heads/*:refs/remotes/origin/* # timeout=10
- > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
-Checking out Revision 4df8a8dbf851036d7882d657324b145513847672 (refs/remotes/origin/main)
- > git config core.sparsecheckout # timeout=10
- > git checkout -f 4df8a8dbf851036d7882d657324b145513847672 # timeout=10
- > git branch -a -v --no-abbrev # timeout=10
- > git branch -D main # timeout=10
- > git checkout -b main 4df8a8dbf851036d7882d657324b145513847672 # timeout=10
-Commit message: "Fixed"
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (2. Run Tests (pytest))
-[Pipeline] wrap
-[Pipeline] // wrap
-Post stage
-[Pipeline] junit
-Recording test results
-No test report files were found. Configuration error?
-Error when executing always post condition:
-Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 178b4bce-c0db-43e6-920d-bc53e8050a2e
-hudson.AbortException: No test report files were found. Configuration error?
-	at PluginClassLoader for junit//hudson.tasks.junit.JUnitParser$ParseResultCallable.invoke(JUnitParser.java:253)
-	at hudson.FilePath.act(FilePath.java:1210)
-	at hudson.FilePath.act(FilePath.java:1193)
-	at PluginClassLoader for junit//hudson.tasks.junit.JUnitParser.parseResult(JUnitParser.java:146)
-	at PluginClassLoader for junit//hudson.tasks.junit.JUnitResultArchiver.parse(JUnitResultArchiver.java:177)
-	at PluginClassLoader for junit//hudson.tasks.junit.JUnitResultArchiver.parseAndSummarize(JUnitResultArchiver.java:282)
-	at PluginClassLoader for junit//hudson.tasks.junit.pipeline.JUnitResultsStepExecution.run(JUnitResultsStepExecution.java:62)
-	at PluginClassLoader for junit//hudson.tasks.junit.pipeline.JUnitResultsStepExecution.run(JUnitResultsStepExecution.java:27)
-	at PluginClassLoader for workflow-step-api//org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution.lambda$start$0(SynchronousNonBlockingStepExecution.java:49)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
-	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
-	at java.base/java.lang.Thread.run(Unknown Source)
-
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (3. Build Docker Image)
-Stage "3. Build Docker Image" skipped due to earlier failure(s)
-[Pipeline] getContext
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] stage
-[Pipeline] { (4. Push to Docker Hub)
-Stage "4. Push to Docker Hub" skipped due to earlier failure(s)
-[Pipeline] getContext
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] }
-[Pipeline] // withEnv
-[Pipeline] }
-[Pipeline] // withEnv
-[Pipeline] }
-[Pipeline] // node
-[Pipeline] End of Pipeline
-java.lang.UnsupportedOperationException: no known implementation of class jenkins.tasks.SimpleBuildWrapper is named PythonInstallationWrapper
-	at PluginClassLoader for structs//org.jenkinsci.plugins.structs.describable.DescribableModel.resolveClass(DescribableModel.java:554)
-	at PluginClassLoader for structs//org.jenkinsci.plugins.structs.describable.DescribableModel.coerce(DescribableModel.java:478)
-	at PluginClassLoader for structs//org.jenkinsci.plugins.structs.describable.DescribableModel.buildArguments(DescribableModel.java:414)
-	at PluginClassLoader for structs//org.jenkinsci.plugins.structs.describable.DescribableModel.instantiate(DescribableModel.java:329)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:305)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:195)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:124)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
-	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
-	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
-	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:41)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:180)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
-	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:163)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:178)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:182)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.methodCall(LoggingInvoker.java:118)
-Also:   org.jenkinsci.plugins.workflow.actions.ErrorAction$ErrorId: 44d5b8e3-f93a-4ccd-8844-4505a42fa6ea
-Caused: java.lang.IllegalArgumentException: Could not instantiate {delegate={$class=PythonInstallationWrapper, installation=Python3.10}} for org.jenkinsci.plugins.workflow.steps.CoreWrapperStep
-	at PluginClassLoader for structs//org.jenkinsci.plugins.structs.describable.DescribableModel.instantiate(DescribableModel.java:339)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeStep(DSL.java:305)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.DSL.invokeMethod(DSL.java:195)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsScript.invokeMethod(CpsScript.java:124)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
-	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:98)
-	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:325)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1225)
-	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1034)
-	at org.codehaus.groovy.runtime.callsite.PogoMetaClassSite.call(PogoMetaClassSite.java:41)
-	at org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:47)
-	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:180)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.GroovyInterceptor.onMethodCall(GroovyInterceptor.java:23)
-	at PluginClassLoader for script-security//org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SandboxInterceptor.onMethodCall(SandboxInterceptor.java:163)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker$1.call(Checker.java:178)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:182)
-	at PluginClassLoader for script-security//org.kohsuke.groovy.sandbox.impl.Checker.checkedCall(Checker.java:152)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.sandbox.SandboxInvoker.methodCall(SandboxInvoker.java:17)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.LoggingInvoker.methodCall(LoggingInvoker.java:118)
-	at WorkflowScript.run(WorkflowScript:24)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.delegateAndExecute(ModelInterpreter.groovy:139)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.executeSingleStage(ModelInterpreter.groovy:633)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.catchRequiredContextForNode(ModelInterpreter.groovy:390)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.executeSingleStage(ModelInterpreter.groovy:632)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:292)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.toolsBlock(ModelInterpreter.groovy:521)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:280)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.withEnvBlock(ModelInterpreter.groovy:432)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:279)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.withCredentialsBlock(ModelInterpreter.groovy:464)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:278)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.inDeclarativeAgent(ModelInterpreter.groovy:561)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:276)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.stageInput(ModelInterpreter.groovy:354)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:265)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.inWrappers(ModelInterpreter.groovy:592)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:263)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.withEnvBlock(ModelInterpreter.groovy:432)
-	at org.jenkinsci.plugins.pipeline.modeldefinition.ModelInterpreter.evaluateStage(ModelInterpreter.groovy:258)
-	at ___cps.transform___(Native Method)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationGroup.methodCall(ContinuationGroup.java:90)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.dispatchOrArg(FunctionCallBlock.java:114)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.FunctionCallBlock$ContinuationImpl.fixArg(FunctionCallBlock.java:83)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
-	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ContinuationPtr$ContinuationImpl.receive(ContinuationPtr.java:72)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.impl.ClosureBlock.eval(ClosureBlock.java:46)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Next.step(Next.java:83)
-	at PluginClassLoader for workflow-cps//com.cloudbees.groovy.cps.Continuable.run0(Continuable.java:147)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.access$001(SandboxContinuable.java:17)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.SandboxContinuable.run0(SandboxContinuable.java:49)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThread.runNextChunk(CpsThread.java:181)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup.run(CpsThreadGroup.java:443)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:351)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsThreadGroup$2.call(CpsThreadGroup.java:299)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$wrap$4(CpsVmExecutorService.java:140)
-	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
-	at hudson.remoting.SingleLaneExecutorService$1.run(SingleLaneExecutorService.java:139)
-	at jenkins.util.ContextResettingExecutorService$1.run(ContextResettingExecutorService.java:28)
-	at jenkins.security.ImpersonatingExecutorService$1.run(ImpersonatingExecutorService.java:68)
-	at jenkins.util.ErrorLoggingExecutorService.lambda$wrap$0(ErrorLoggingExecutorService.java:51)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Unknown Source)
-	at java.base/java.util.concurrent.FutureTask.run(Unknown Source)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:53)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService$1.call(CpsVmExecutorService.java:50)
-	at org.codehaus.groovy.runtime.GroovyCategorySupport$ThreadCategoryInfo.use(GroovyCategorySupport.java:136)
-	at org.codehaus.groovy.runtime.GroovyCategorySupport.use(GroovyCategorySupport.java:275)
-	at PluginClassLoader for workflow-cps//org.jenkinsci.plugins.workflow.cps.CpsVmExecutorService.lambda$categoryThreadFactory$0(CpsVmExecutorService.java:50)
-	at java.base/java.lang.Thread.run(Unknown Source)
-Finished: FAILURE
-
-        // === المرحلة 2: تشغيل الاختبارات (pytest) ===
         stage('2. Run Tests (pytest)') {
             steps {
                 dir('messaging_app') {
-                    // ✅ الحل النهائي: تثبيت بايثون يدوياً باستخدام أوامر shell
-                    // تثبيت الأدوات الأساسية وإعداد بيئة بايثون
+                    // تثبيت بايثون يدوياً لتجاوز مشكلة البلاجن
                     sh '''
                         apt-get update
                         apt-get install -y python3-pip python3-dev
                         pip3 install -r requirements.txt
                         pip3 install pytest coverage
                         
-                        # تشغيل الاختبارات
                         pytest --junitxml=test-report.xml || true
                     '''
                 }
@@ -244,25 +32,18 @@ Finished: FAILURE
                 }
             }
         }
-        // ... (باقي المراحل كما هي)     
-        
-        // === المرحلة 3: بناء صورة Docker (المهمة 1) ===
         stage('3. Build Docker Image') {
             steps {
                 dir('messaging_app') {
                     script {
-                        // بناء الصورة
                         docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}", ".")
                     }
                 }
             }
         }
-        
-        // === المرحلة 4: رفع الصورة لـ Docker Hub (المهمة 1) ===
         stage('4. Push to Docker Hub') {
             steps {
                 script {
-                    // استخدام الأسرار لرفع الصورة
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDS) {
                         docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
                         docker.image("${DOCKER_IMAGE_NAME}:latest").push()
