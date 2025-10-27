@@ -1,56 +1,63 @@
 pipeline {
     agent any
     environment {
+        // IDs must match the credentials created in Jenkins
         GITHUB_CREDS = 'github-token'
         DOCKER_CREDS = 'dockerhub-creds'
-        // ⬇️⬇️ غيّر ده لاسمك في جيت هاب ⬇️⬇️
+        // 🚨 يجب تغيير الأسماء هنا 
         REPO_URL = 'https://github.com/diaamohammad/alx-backend-python.git'
-        // ⬇️⬇️ غيّر ده لاسمك في دوكر هاب ⬇️⬇️
         DOCKER_IMAGE_NAME = 'diaaalsemary5/messaging-app'
     }
     stages {
-        // === المهمة 0: سحب الكود ===
+        // === المرحلة 1: سحب الكود والتحقق ===
         stage('1. Checkout Code') {
             steps {
                 git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
             }
         }
-
-        // === المهمة 0: الاختبار ===
+        
+        // === المرحلة 2: تشغيل الاختبارات (pytest) ===
         stage('2. Run Tests (pytest)') {
+            // ✅ Fix: استخدام الصيغة الصحيحة لـ tools 
             tools {
-                // (لازم الاسم ده يكون "بالظبط" زي اللي عملته في Jenkins -> Tools)
-                python: 'Python 3.10'
+                python 'Python 3.10' 
             }
             steps {
                 dir('messaging_app') {
+                    // تثبيت الاعتماديات
                     sh 'pip install -r requirements.txt'
                     sh 'pip install pytest'
+                    // تشغيل الاختبارات
                     sh 'pytest --junitxml=test-report.xml || true'
                 }
             }
             post {
                 always {
+                    // حفظ تقرير الاختبارات 
                     junit 'messaging_app/test-report.xml'
                 }
             }
         }
-
-        // === المهمة 1: بناء ورفع صورة Docker ===
+        
+        // === المرحلة 3: بناء صورة Docker (المهمة 1) ===
         stage('3. Build Docker Image') {
             steps {
                 dir('messaging_app') {
                     script {
-                        def appImage = docker.build("${DOCKER_IMAGE_NAME}:latest", ".")
+                        def appImage = docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}", ".")
                     }
                 }
             }
         }
+        
+        // === المرحلة 4: رفع الصورة لـ Docker Hub (المهمة 1) ===
         stage('4. Push to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDS) {
-                        docker.image(DOCKER_IMAGE_NAME).push('latest')
+                        // رفع الصورة برقم الـ build و tag الـ latest
+                        docker.image("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE_NAME}:latest").push()
                     }
                 }
             }
