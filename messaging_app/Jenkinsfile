@@ -15,37 +15,40 @@ pipeline {
                 git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
             }
         }
-        
-        // === المرحلة 2: تشغيل الاختبارات (pytest) ===
-        stage('2. Run Tests (pytest)') {
-            // ✅ الحل الأكيد: تشغيل هذه المرحلة كـ root لتجنب خطأ sudo/Permission Denied
-            agent {
-                label 'master'
-                args '-u 0' // 0 هو ID المستخدم root
-            }
-            steps {
-                dir('messaging_app') {
-                    // الأوامر الآن ستعمل بدون sudo لإننا غيرنا المستخدم
-                    sh '''
-                        echo "Installing dependencies..."
-                        apt-get update
-                        apt-get install -y python3-pip python3-dev libmysqlclient-dev
-                        
-                        pip3 install -r requirements.txt
-                        pip3 install pytest coverage
-                        
-                        pytest --junitxml=test-report.xml || true
-                    '''
-                }
-            }
-            post {
-                always {
-                    junit 'messaging_app/test-report.xml'
-                }
-            }
+       // ⚠️ تأكد أنك حذفت سطر agent any من أول الملف (سطر 2) ⚠️
+
+// ... (باقي الملف)
+
+// === المرحلة 2: تشغيل الاختبارات (pytest) ===
+stage('2. Run Tests (pytest)') {
+    // ✅ الحل الأخير لتصحيح Syntax الـ Agent
+    agent {
+        label 'master'
+    }
+    steps {
+        dir('messaging_app') {
+            // سنعتمد على sudo apt-get update مرة أخيرة مع تصحيح الـ Agent
+            sh '''
+                echo "Installing dependencies..."
+                sudo apt-get update
+                sudo apt-get install -y python3-pip python3-dev libmysqlclient-dev
+                
+                pip3 install -r requirements.txt
+                pip3 install pytest coverage
+                
+                pytest --junitxml=test-report.xml || true
+            '''
         }
-               
-        // === Stage 3: Build Docker Image (المهمة 1) ===
+    }
+    post {
+        always {
+            junit 'messaging_app/test-report.xml'
+        }
+    }
+}
+// ... (باقي المراحل) 
+                  
+       // === Stage 3: Build Docker Image (المهمة 1) ===
         stage('3. Build Docker Image') {
             steps {
                 dir('messaging_app') {
