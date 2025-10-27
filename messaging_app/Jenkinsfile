@@ -1,24 +1,31 @@
 pipeline {
     agent any
     environment {
+        // IDs must match the credentials created in Jenkins
         GITHUB_CREDS = 'github-token'
         DOCKER_CREDS = 'dockerhub-creds'
+        // 🚨 CHANGE THESE USERNAMES 🚨
         REPO_URL = 'https://github.com/diaamohammad/alx-backend-python.git'
         DOCKER_IMAGE_NAME = 'diaaalsemary5/messaging-app'
     }
     stages {
+        // === Stage 1: Checkout Code ===
         stage('1. Checkout Code') {
             steps {
                 git url: REPO_URL, credentialsId: GITHUB_CREDS, branch: 'main'
             }
         }
+        
+        // === Stage 2: Run Tests (pytest) ===
         stage('2. Run Tests (pytest)') {
             steps {
                 dir('messaging_app') {
-                    // تثبيت بايثون يدوياً لتجاوز مشكلة البلاجن
+                    // ✅ الحل النهائي: تثبيت بايثون يدوياً باستخدام sudo/apt-get لحل مشكلة الصلاحيات و pip
                     sh '''
-                        apt-get update
-                        apt-get install -y python3-pip python3-dev
+                        echo "Installing Python dependencies and running tests..."
+                        sudo apt-get update
+                        sudo apt-get install -y python3-pip python3-dev libmysqlclient-dev
+                        
                         pip3 install -r requirements.txt
                         pip3 install pytest coverage
                         
@@ -32,6 +39,8 @@ pipeline {
                 }
             }
         }
+        
+        // === Stage 3: Build Docker Image (المهمة 1) ===
         stage('3. Build Docker Image') {
             steps {
                 dir('messaging_app') {
@@ -41,6 +50,8 @@ pipeline {
                 }
             }
         }
+        
+        // === Stage 4: Push to Docker Hub (المهمة 1) ===
         stage('4. Push to Docker Hub') {
             steps {
                 script {
