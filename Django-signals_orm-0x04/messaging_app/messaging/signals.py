@@ -3,33 +3,45 @@ from django.dispatch import receiver
 from .models import Message, Notification, MessageHistory
 from django.contrib.auth.models import User
 
+@receiver(post_save, sender= Message)
+def create_notifcation(sender, instance, created,**kwargs):
 
-@receiver(post_save, sender=Message)
-def create_notification(sender, instance, created, **kwargs):
     if created:
-        Notification.objects.create(
-            user=instance.receiver,
-            message=instance,
-            text=f"You have a new message from {instance.sender.username}"
-        )
+
+        reciver_user=instance.receiver
+
+        Notification.objects.create(user=reciver_user,
+                message=instance,
+                )
+        print(f"A new notifcatin has been created for user {reciver_user.username}")
 
 
 
 @receiver(pre_save, sender=Message)
-def log_message_edit(sender, instance, **kwargs):
+def save_old_message(sender, instance,**kwargs):
+
     if instance.pk:
-        old_message = Message.objects.get(pk=instance.pk)
-        if old_message.content != instance.content:
-            MessageHistory.objects.create(
-                message=instance,
-                old_content=old_message.content
-            )
-            instance.edited = True
+
+        try:
+          old_message = Message.objects.get(pk=instance.pk)
+          old_content = old_message.content
+
+          if old_content != instance.content :
+              
+             MessageHistory.objetcs.create(old_content=old_content,
+             message=instance)
+
+             instance.edited = True
+        except sender.DoesNotExit:
+            pass
+   
 
 
 @receiver(post_delete, sender=User)
-def delete_user_related_data(sender, instance, **kwargs):
-    Message.objects.filter(sender=instance).delete()
-    Message.objects.filter(receiver=instance).delete()
-    Notification.objects.filter(user=instance).delete()
-    MessageHistory.objects.filter(message__sender=instance).delete()
+def cleanup_related_data(sender, instance, **kwargs):
+
+    user_id = instance.id
+    username = instance.username
+
+    print(f'The automatic cleaning process for user-related data has been completed:{username } (ID :{user_id})')
+
