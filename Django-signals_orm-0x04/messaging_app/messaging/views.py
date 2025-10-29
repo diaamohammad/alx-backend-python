@@ -26,14 +26,8 @@ def delete_user(request):
 
 
 
-
-
-
-
-
-
-
-@cache_page(60)  # Cache for 60 seconds
+# using advance ORM
+@cache_page(60)  
 def messages_list(request):
     messages = Message.objects.all().select_related('sender', 'receiver')
     return render(request, 'messages_list.html', {'messages': messages})
